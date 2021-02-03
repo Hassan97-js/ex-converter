@@ -1,0 +1,28 @@
+// Variables
+@import "./variables";
+@import "./mixins";
+@import "./nav";
+@import "./reset";
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
+body {
+  font-family: "Open Sans", sans-serif;
+  height: 100vh;
+  background-color: $bg-body;
+  div#app {
+    height: 100%;
+  }
+}
+
+$body-bg: $Blue;
+
+$body-color: $White;
+
+$theme-colors: ("primary": $Red);
+
+@import "~bootstrap";
+@import "~bootstrap-vue";
+
+#app {
+  color: unset;
+}
