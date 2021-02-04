@@ -3,6 +3,7 @@ node_modules
 /dist
 /Notes
 exLogo.png
+netlify.toml
 
 # local env files
 .env.local

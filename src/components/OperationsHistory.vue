@@ -50,6 +50,7 @@ export default {
 
 <style scoped lang="scss">
 @import "../scss/_variables.scss";
+
 .operations-history {
   height: 100%;
   padding: 2rem;

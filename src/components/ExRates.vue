@@ -1,8 +1,21 @@
 <template>
   <b-container class="mt-5">
+    <b-alert
+      class="dis-none"
+      dismissible
+      v-if="deferredPrompt"
+      show
+      variant="success"
+    >
+      The event is ready you can go ahead and download the PWA 🙂
+    </b-alert>
+    <b-alert class="dis-none" v-else show variant="info mb-4">
+      Awaiting BeforeInstallPrompt event to Fire. It would not take so long 🙂.
+      If the event <strong>didn't fire click</strong> anywhere inside the
+      <strong>viewport</strong> and it will fire.
+    </b-alert>
     <b-button
-      v-if="isVisible"
-      class="bg-primary btn btn-outline-primary text-white"
+      class="bg-primary btn btn-outline-primary text-white dis-none"
       @click="triggerInstall"
       >Install</b-button
     >
@@ -13,8 +26,8 @@
       </h1>
 
       <b-form-row>
-        <b-col>
-          <label for="amount">Amount</label>
+        <b-col cols="12" lg>
+          <label class="d-block text-left" for="amount">Amount</label>
           <b-form-input
             v-model="rateAmount"
             type="number"
@@ -23,8 +36,12 @@
           ></b-form-input>
         </b-col>
 
-        <b-col>
-          <label for="select-first-currency">{{ inputLable }}</label>
+        <b-col cols="12" lg>
+          <label
+            class="d-block text-left mt-2 mt-lg-0"
+            for="select-first-currency"
+            >{{ inputLable }}</label
+          >
           <b-form-select
             v-model="rateOne"
             :options="ratesKeys"
@@ -32,10 +49,18 @@
           ></b-form-select>
         </b-col>
 
-        <img class="imageIcon" src="../assets/exIcon.svg" alt="Arrow icon" />
+        <img
+          class="imageIcon d-none d-lg-block"
+          src="../assets/exIcon.svg"
+          alt="Arrow icon"
+        />
 
-        <b-col>
-          <label for="select-second-currency">{{ inputLable }}</label>
+        <b-col cols="12" lg>
+          <label
+            class="d-block text-left mt-2 mt-lg-0"
+            for="select-second-currency"
+            >{{ inputLable }}</label
+          >
           <b-form-select
             v-model="rateTwo"
             :options="ratesKeys"
@@ -97,21 +122,16 @@
 <script>
 export default {
   name: "ExRates",
-  mounted() {
+  created() {
     this.$store.dispatch("getAllCurrency");
-    window.addEventListener("beforeinstallprompt", e => {
-      console.log("Event fired!");
-      // Prevent the mini-infobar from appearing on mobile
-      e.preventDefault();
-      // Save the event so it can be triggered later.
-      this.deferredPrompt = e;
-    });
+  },
+  mounted() {
+    this.saveBeforeInstallPormpt();
   },
   data() {
     return {
       exchangeRateResult: null,
-      deferredPrompt: null,
-      isVisible: true
+      deferredPrompt: null
     };
   },
   props: {
@@ -185,21 +205,31 @@ export default {
           console.error(err);
         });
     },
-    triggerInstall() {
-      console.log("Event is triggerd!");
-      this.deferredPrompt.prompt();
-      this.deferredPrompt.userChoice.then(choiceResult => {
-        if (choiceResult.outcome === "accepted") {
-          this.$swal("You accepted the install prompt");
-        } else {
-          this.$swal("You dismissed the install prompt");
-        }
-        // Detect when the PWA was successfully installed
-        window.addEventListener("appinstalled", () => {
-          this.$swal("INSTALL: Success");
-          this.isVisible = false;
-        });
+    saveBeforeInstallPormpt() {
+      window.addEventListener("beforeinstallprompt", e => {
+        console.log("Event fired!");
+        // Prevent the mini-infobar from appearing on mobile
+        e.preventDefault();
+        // Save the event so it can be triggered later.
+        this.deferredPrompt = e;
       });
+    },
+    triggerInstall() {
+      if (this.deferredPrompt) {
+        console.log("Event is triggerd!");
+        this.deferredPrompt.prompt();
+        this.deferredPrompt.userChoice.then(choiceResult => {
+          if (choiceResult.outcome === "accepted") {
+            this.$swal("You accepted the install prompt");
+          } else {
+            this.$swal("You dismissed the install prompt");
+          }
+          // Detect when the PWA was successfully installed
+          window.addEventListener("appinstalled", () => {
+            console.log("INTALL: Success");
+          });
+        });
+      }
     }
   }
 };
@@ -208,21 +238,29 @@ export default {
 <style scoped lang="scss">
 @import "../scss/_variables.scss";
 
-span#highlighted {
-  color: $Red;
+main {
+  span#highlighted {
+    color: $Red;
+  }
+  .flex_row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .main-button {
+      padding: 0.5rem 2rem;
+    }
+  }
+  .imageIcon {
+    margin-top: 1.9rem;
+  }
+  .set-border {
+    border: 4px solid $Red;
+  }
 }
-.flex_row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.main-button {
-  padding: 0.5rem 2rem;
-}
-.imageIcon {
-  margin-top: 1.9rem;
-}
-.set-border {
-  border: 4px solid $Red;
+
+@media all and (display-mode: standalone) {
+  .dis-none {
+    display: none;
+  }
 }
 </style>

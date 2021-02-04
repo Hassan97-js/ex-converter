@@ -14,23 +14,6 @@ export default {
       this.$swal(isOnline ? "You're Online 🙂" : "You're Offline 😔");
     });
   },
-  data() {
-    return {
-      confirmInstall: {
-        title: "Do you want to save the changes?",
-        showDenyButton: true,
-        showCancelButton: true,
-        confirmButtonText: `Install`,
-        denyButtonText: `No`,
-        customClass: {
-          cancelButton: "order-1 right-gap",
-          confirmButton: "order-2",
-          denyButton: "order-3"
-        }
-      }
-      // isVisible: false
-    };
-  },
   components: {
     Nav
   },
