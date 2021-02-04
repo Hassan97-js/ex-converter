@@ -24,7 +24,7 @@
         Currency
         <span id="highlighted">Converter</span>
       </h1>
-      <!-- Comment -->
+
       <b-form-row>
         <b-col cols="12" lg>
           <label class="d-block text-left" for="amount">Amount</label>
