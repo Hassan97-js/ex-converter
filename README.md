@@ -1,4 +1,4 @@
-# rotorcraft-vue-20201
+# Currency Converter
 
 ## Project setup
 ```
